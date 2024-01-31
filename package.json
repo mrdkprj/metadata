@@ -14,8 +14,10 @@
   },
   "author": "",
   "license": "MIT",
+  "dependencies": {
+    "cargo-cp-artifact": "^0.1"
+  },
   "devDependencies": {
-    "cargo-cp-artifact": "^0.1",
     "typescript": "^5.3.3"
   }
 }
