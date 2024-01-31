@@ -1,0 +1,31 @@
+[package]
+name = "metadata"
+version = "0.1.0"
+license = "ISC"
+edition = "2018"
+exclude = ["index.node"]
+
+[lib]
+crate-type = ["cdylib"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[dependencies.neon]
+version = "0.10"
+default-features = false
+features = ["napi-6"]
+
+[dependencies.windows]
+version = "0.52"
+features = [
+    "Win32_UI_Shell",
+    "Win32_UI_Shell_PropertiesSystem",
+    "Win32_System_Com_StructuredStorage",
+    "Win32_System_Com",
+    "Win32_Foundation",
+    "Win32_System_Variant",
+    "Win32_Storage",
+    "Win32_Storage_EnhancedStorage"
+]
