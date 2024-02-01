@@ -25,6 +25,8 @@
   "binary": {
     "module_name": "index",
     "module_path": "./build/",
-    "host": "https://your_module.s3-us-west-1.amazonaws.com"
+    "host": "https://github.com/mrdkprj/metadata/releases/download/",
+    "remote_path": "{version}",
+    "package_name": "{module_name}-v{version}-{node_abi}-{platform}-{arch}.tar.gz"
   }
 }
