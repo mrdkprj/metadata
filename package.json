@@ -1,5 +1,5 @@
 {
-  "name": "metadata",
+  "name": "win32metadata",
   "version": "0.1.0",
   "description": "",
   "main": "lib/index.js",
@@ -8,14 +8,23 @@
     "build": "cargo-cp-artifact -nc ./build/index.node -- cargo build --message-format=json-render-diagnostics",
     "build-debug": "npm run build --",
     "build-release": "npm run build -- --release",
-    "install": "npm run build-release",
-    "test": "tsc ./test/test.ts --esModuleInterop",
-    "run-test":"node ./test/test.js"
+    "install": "node-pre-gyp install --fallback-to-build",
+    "package": "node-pre-gyp package",
+    "run-test": "node ./test/test.js",
+    "test": "tsc ./test/test.ts --esModuleInterop"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "cargo-cp-artifact": "^0.1",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@mapbox/node-pre-gyp": "^1.0.11"
+  },
+  "binary": {
+    "module_name": "index",
+    "module_path": "./build/",
+    "host": "https://your_module.s3-us-west-1.amazonaws.com"
   }
 }

@@ -23,16 +23,32 @@ use windows::{
     },
 };
 
+fn get_store(path:&String) -> windows::core::Result<IPropertyStore> {
+
+    unsafe{
+        let store:IPropertyStore = SHGetPropertyStoreFromParsingName(
+            &HSTRING::from(path),
+            None,
+            GPS_READWRITE
+        )?;
+
+        Ok(store)
+    }
+}
+
 fn get_comments(mut cx: FunctionContext) -> JsResult<JsObject> {
 
-    let array = cx.argument::<JsArray>(0)?.to_vec(&mut cx).unwrap();
+    let array = cx.argument::<JsArray>(0)?.to_vec(&mut cx)?;
     let mut files = Vec::new();
     for file in array{
-        let x = file.to_string(&mut cx).unwrap().value(&mut cx);
+        let x = file.to_string(&mut cx)?.value(&mut cx);
         files.push(x);
     }
 
-    let map = read_metadata(files).unwrap();
+    let map = match read_metadata(files) {
+        Ok(map) => map,
+        Err(error) => return cx.throw_error(error.message().to_string()),
+    };
 
     let result = cx.empty_object();
 
@@ -56,26 +72,15 @@ fn set_comment(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         return cx.throw_error("Invalid number of arguments");
     }
 
-    let file = cx.argument::<JsString>(0).unwrap().value(&mut cx);
-    let comment = cx.argument::<JsString>(1).unwrap().value(&mut cx);
+    let file = cx.argument::<JsString>(0)?.value(&mut cx);
+    let comment = cx.argument::<JsString>(1)?.value(&mut cx);
 
-    let result = write_metadata(file, comment);
+    let result = match write_metadata(file, comment) {
+        Ok(result) => result,
+        Err(error) => return cx.throw_error(error.message().to_string()),
+    };
 
-    Ok(cx.boolean(result.unwrap()))
-}
-
-
-fn get_store(path:&String) -> windows::core::Result<IPropertyStore> {
-
-    unsafe{
-        let store:IPropertyStore = SHGetPropertyStoreFromParsingName(
-            &HSTRING::from(path),
-            None,
-            GPS_READWRITE
-        )?;
-
-        Ok(store)
-    }
+    Ok(cx.boolean(result))
 }
 
 fn read_metadata(files:Vec<String>) -> windows::core::Result<HashMap<String, String>> {
@@ -97,7 +102,7 @@ fn read_metadata(files:Vec<String>) -> windows::core::Result<HashMap<String, Str
 
                 let string_elm = PropVariantGetStringElem(&prop_value, 0);
                 PropVariantClear(&mut prop_value)?;
-                let comment = string_elm.unwrap().to_string().unwrap();
+                let comment = string_elm?.to_string()?;
 
                 result.insert(file, comment);
 
@@ -116,7 +121,7 @@ fn write_metadata(file:String, comment:String) -> windows::core::Result<bool> {
 
         CoInitializeEx(None, COINIT_APARTMENTTHREADED)?;
 
-        let store = get_store(&file).unwrap();
+        let store = get_store(&file)?;
 
         let mut nstr = comment.to_owned();
         nstr.push_str("\0");
