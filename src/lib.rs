@@ -89,7 +89,9 @@ fn to_btsr(str:&str) -> windows::core::Result<BSTR> {
     Ok(btsr)
 }
 
-fn get_comments(mut cx: FunctionContext) -> JsResult<JsObject> {
+fn get_comments(mut cx: FunctionContext) -> JsResult<JsPromise> {
+
+    let (deferred, promise) = cx.promise();
 
     let array = cx.argument::<JsArray>(0)?.to_vec(&mut cx)?;
     let mut files = Vec::new();
@@ -115,8 +117,33 @@ fn get_comments(mut cx: FunctionContext) -> JsResult<JsObject> {
 
     });
 
-    Ok(result)
+    deferred.resolve(&mut cx, result);
 
+    Ok(promise)
+
+}
+
+fn set_comment(mut cx: FunctionContext) -> JsResult<JsPromise> {
+
+    if cx.len() != 2 {
+        return cx.throw_error("Invalid number of arguments");
+    }
+
+    let (deferred, promise) = cx.promise();
+
+    let file = cx.argument::<JsString>(0)?.value(&mut cx);
+    let comment = cx.argument::<JsString>(1)?.value(&mut cx);
+
+    let result = match write_metadata(file, comment) {
+        Ok(result) => result,
+        Err(error) => return cx.throw_error(error.message().to_string()),
+    };
+
+    let js_result = cx.boolean(result);
+
+    deferred.resolve(&mut cx, js_result);
+
+    Ok(promise)
 }
 
 fn read_metadata(files:Vec<String>) -> windows::core::Result<HashMap<String, String>> {
@@ -152,23 +179,6 @@ fn read_metadata(files:Vec<String>) -> windows::core::Result<HashMap<String, Str
         Ok(result)
     }
 
-}
-
-fn set_comment(mut cx: FunctionContext) -> JsResult<JsBoolean> {
-
-    if cx.len() != 2 {
-        return cx.throw_error("Invalid number of arguments");
-    }
-
-    let file = cx.argument::<JsString>(0)?.value(&mut cx);
-    let comment = cx.argument::<JsString>(1)?.value(&mut cx);
-
-    let result = match write_metadata(file, comment) {
-        Ok(result) => result,
-        Err(error) => return cx.throw_error(error.message().to_string()),
-    };
-
-    Ok(cx.boolean(result))
 }
 
 fn get_store(path:&String, write:bool) -> windows::core::Result<IPropertyStore> {

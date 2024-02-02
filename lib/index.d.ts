@@ -5,7 +5,7 @@ declare namespace Metadata {
      * @param files Array of file's fullpath
      * @returns Object whose key is file's fullpath and value is file's comment metadata string.
      */
-    function getComments(files:string[]): {[path:string]:string};
+    function getComments(files:string[]): Promise<{[path:string]:string}>;
 
     /**
      * Set comment metadata of a file
@@ -13,7 +13,7 @@ declare namespace Metadata {
      * @param comment file's comment
      * @returns True when comment is written sucuseccfully, false when error occurs.
      */
-    function setComment(file:string, comment:string): boolean;
+    function setComment(file:string, comment:string): Promise<boolean>;
 
 }
 

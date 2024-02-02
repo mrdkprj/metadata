@@ -11,7 +11,7 @@
     "install": "node-pre-gyp install --fallback-to-build",
     "package": "node-pre-gyp package",
     "test": "node ./test/test.js",
-    "tsc": "tsc ./test/test.ts --esModuleInterop "
+    "tsc": "tsc ./test/test.ts --esModuleInterop --lib ES2015,dom"
   },
   "author": "",
   "license": "MIT",
