@@ -10,8 +10,8 @@
     "build-release": "npm run build -- --release",
     "install": "node-pre-gyp install --fallback-to-build",
     "package": "node-pre-gyp package",
-    "run-test": "node ./test/test.js",
-    "test": "tsc ./test/test.ts --esModuleInterop"
+    "test": "node ./test/test.js",
+    "tsc": "tsc ./test/test.ts --esModuleInterop "
   },
   "author": "",
   "license": "MIT",

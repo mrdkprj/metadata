@@ -3,7 +3,7 @@ import { files } from "./file"
 
 const x = metadata.getComments(files);
 console.log(x);
-
+/*
 const target = files[1];
 const oldComment = x[target]
 const newComment = "test"
@@ -26,3 +26,4 @@ try{
 }catch(ex:any){
     console.log(ex.message)
 }
+*/
