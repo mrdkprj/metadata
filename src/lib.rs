@@ -1,4 +1,5 @@
-use neon::prelude::*;
+use neon::{prelude::*, result::Throw};
+//use std::thread::spawn;
 use std::mem::ManuallyDrop;
 use std::path::Path;
 use std::collections::HashMap;
@@ -23,7 +24,7 @@ use windows::{
                 PROPVARIANT_0_0,
                 PROPVARIANT,
                 PROPVARIANT_0,
-                PROPVARIANT_0_0_0,
+                PROPVARIANT_0_0_0
             }
         },
         UI::Shell::{
@@ -89,38 +90,31 @@ fn to_btsr(str:&str) -> windows::core::Result<BSTR> {
     Ok(btsr)
 }
 
-fn get_comments(mut cx: FunctionContext) -> JsResult<JsPromise> {
-
-    let (deferred, promise) = cx.promise();
-
-    let array = cx.argument::<JsArray>(0)?.to_vec(&mut cx)?;
+fn to_str_vec(cx: &mut FunctionContext) -> Result<Vec<String>, Throw> {
+    let array = cx.argument::<JsArray>(0)?.to_vec(cx)?;
     let mut files = Vec::new();
     for file in array{
-        let full_path = file.to_string(&mut cx)?.value(&mut cx);
+        let full_path = file.to_string(cx)?.value(cx);
         files.push(full_path);
     }
+    Ok(files)
+}
 
-    let map = match read_metadata(files) {
-        Ok(map) => map,
-        Err(error) => return cx.throw_error(error.message().to_string()),
-    };
+fn get_comments(mut cx: FunctionContext) -> JsResult<JsPromise> {
 
-    let result = cx.empty_object();
+    let files = to_str_vec(&mut cx)?;
 
-    cx.execute_scoped(|mut cx| {
-
-        for (key, value) in map {
+    let promise = cx.task(move || read_metadata(files)).promise(move |mut cx, map| {
+        let result = cx.empty_object();
+        for (key, value) in map.unwrap() {
             let path = cx.string(key);
             let comment = cx.string(value);
             result.set(&mut cx, path, comment).unwrap();
         }
-
+        Ok(result)
     });
 
-    deferred.resolve(&mut cx, result);
-
     Ok(promise)
-
 }
 
 fn set_comment(mut cx: FunctionContext) -> JsResult<JsPromise> {
@@ -129,19 +123,10 @@ fn set_comment(mut cx: FunctionContext) -> JsResult<JsPromise> {
         return cx.throw_error("Invalid number of arguments");
     }
 
-    let (deferred, promise) = cx.promise();
-
     let file = cx.argument::<JsString>(0)?.value(&mut cx);
     let comment = cx.argument::<JsString>(1)?.value(&mut cx);
 
-    let result = match write_metadata(file, comment) {
-        Ok(result) => result,
-        Err(error) => return cx.throw_error(error.message().to_string()),
-    };
-
-    let js_result = cx.boolean(result);
-
-    deferred.resolve(&mut cx, js_result);
+    let promise = cx.task(move || write_metadata(file, comment)).promise(move |mut cx, result| Ok(cx.boolean(result.unwrap())));
 
     Ok(promise)
 }
@@ -168,7 +153,7 @@ fn read_metadata(files:Vec<String>) -> windows::core::Result<HashMap<String, Str
         for file in files {
             let file_name = Path::new(&file).file_name().unwrap().to_str().unwrap();
             let name = to_btsr(&file_name)?;
-            let folder_item =folder.ParseName(&name)?;
+            let folder_item = folder.ParseName(&name)?;
             let v_item = VARIANT::from_item(&folder_item)?;
             let comment = folder.GetDetailsOf(v_item, 24)?;
             result.insert(file, comment.to_string());

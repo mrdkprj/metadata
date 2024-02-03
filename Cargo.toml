@@ -1,6 +1,6 @@
 [package]
 name = "win32metadata"
-version = "0.1.0"
+version = "0.1.1"
 license = "MIT"
 edition = "2018"
 exclude = ["index.node"]
@@ -15,7 +15,7 @@ crate-type = ["cdylib"]
 [dependencies.neon]
 version = "0.10"
 default-features = false
-features = ["napi-6", "promise-api"]
+features = ["napi-6", "promise-api", "task-api"]
 
 [dependencies.windows]
 version = "0.52"
