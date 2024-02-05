@@ -42,7 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = __importDefault(require("../lib/index"));
 var file_1 = require("./file");
 var runTest = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var x, target, oldComment, newComment, y, z, ex_1;
+    var x, target, oldComment, newComment, all;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, index_1.default.getComments(file_1.files)];
@@ -52,36 +52,11 @@ var runTest = function () { return __awaiter(void 0, void 0, void 0, function ()
                 target = file_1.files[1];
                 oldComment = x[target];
                 newComment = "test";
-                return [4 /*yield*/, index_1.default.setComment(target, newComment)];
+                return [4 /*yield*/, index_1.default.read(file_1.files[0])];
             case 2:
-                _a.sent();
-                return [4 /*yield*/, index_1.default.getComments([target])];
-            case 3:
-                y = _a.sent();
-                console.log(y);
-                console.log(y[target] == newComment);
-                return [4 /*yield*/, index_1.default.setComment(target, oldComment)];
-            case 4:
-                _a.sent();
-                return [4 /*yield*/, index_1.default.getComments([target])];
-            case 5:
-                z = _a.sent();
-                console.log(z);
-                console.log(z[target] == oldComment);
-                _a.label = 6;
-            case 6:
-                _a.trys.push([6, 8, , 9]);
-                //@ts-ignore
-                return [4 /*yield*/, index_1.default.setComment(target, oldComment, "")];
-            case 7:
-                //@ts-ignore
-                _a.sent();
-                return [3 /*break*/, 9];
-            case 8:
-                ex_1 = _a.sent();
-                console.log(ex_1.message);
-                return [3 /*break*/, 9];
-            case 9: return [2 /*return*/];
+                all = _a.sent();
+                console.log(all);
+                return [2 /*return*/];
         }
     });
 }); };

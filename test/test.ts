@@ -8,7 +8,7 @@ const runTest = async () => {
     const target = files[1];
     const oldComment = x[target]
     const newComment = "test"
-
+/*
     await metadata.setComment(target, newComment);
 
     const y = await metadata.getComments([target]);
@@ -26,8 +26,10 @@ const runTest = async () => {
         await metadata.setComment(target, oldComment, "");
     }catch(ex:any){
         console.log(ex.message)
-    }
+    }*/
 
+    const all = await metadata.read(files[0]);
+    console.log(all)
 }
 
 runTest();

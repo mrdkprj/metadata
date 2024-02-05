@@ -1,5 +1,5 @@
 [package]
-name = "win32metadata"
+name = "win32props"
 version = "0.1.1"
 license = "MIT"
 edition = "2018"
