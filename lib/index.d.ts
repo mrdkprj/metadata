@@ -5,7 +5,7 @@ declare namespace Win32Props {
      * @param file file's fullpath
      * @returns Object whose key is property name and value is formatted property value.
     */
-    function read(file:string): Promise<string[]>;
+    function read(file:string): Promise<{[key:string]:string}>;
 
     /**
      * Get comment metadata of files
