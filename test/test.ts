@@ -14,7 +14,7 @@ const runTest = async () => {
 
     await metadata.setValue(target, "Comment", newComment);
 
-    x = await metadata.getValues(files, "Comment");
+    x = await metadata.getValue(target, "Comment");
     console.log(x);
 
     // try{

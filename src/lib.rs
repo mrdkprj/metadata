@@ -37,21 +37,37 @@ fn get_value(mut cx: FunctionContext) -> JsResult<JsPromise> {
         return cx.throw_error("Invalid number of arguments");
     }
 
-    let array = match cx.argument::<JsArray>(0) {
-        Ok(array) => array.to_vec(&mut cx)?,
-        Err(_) => {
-            let file = cx.argument::<JsString>(0)?;
-            let array = cx.empty_array();
-            array.set(&mut cx, 0, file)?;
-            array.to_vec(&mut cx)?
-        }
-    };
+    let mut files = Vec::new();
+    let file = cx.argument::<JsString>(0)?.value(&mut cx);
+    files.push(file);
+
+    let result = get_values_promise(cx, files)?;
+
+    Ok(result)
+
+}
+
+fn get_values(mut cx: FunctionContext) -> JsResult<JsPromise> {
+
+    if cx.len() != 2 {
+        return cx.throw_error("Invalid number of arguments");
+    }
 
     let mut files = Vec::new();
+    let array = cx.argument::<JsArray>(0)?.to_vec(&mut cx)?;
+
     for file in array {
         let full_path = file.to_string(&mut cx)?.value(&mut cx);
         files.push(full_path);
     }
+
+    let result = get_values_promise(cx, files)?;
+
+    Ok(result)
+}
+
+fn get_values_promise(mut cx: FunctionContext, files:Vec<String>) -> JsResult<JsPromise>{
+
     let prop_name = cx.argument::<JsString>(1)?.value(&mut cx);
 
     let promise = cx.task(move || read_values(files, prop_name)).promise(move |mut cx, values| {
@@ -97,7 +113,7 @@ fn set_value(mut cx: FunctionContext) -> JsResult<JsPromise> {
 fn main(mut cx: ModuleContext) -> NeonResult<()> {
     cx.export_function("read", read)?;
     cx.export_function("getValue", get_value)?;
-    //cx.export_function("getValues", get_values)?;
+    cx.export_function("getValues", get_values)?;
     cx.export_function("setValue", set_value)?;
     Ok(())
 }

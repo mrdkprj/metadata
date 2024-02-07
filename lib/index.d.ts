@@ -16,8 +16,7 @@ declare namespace Win32Props {
     function getValue(file:string, propertyName:PropertyName): Promise<{[file:string]:string}>;
 
     /**
-     * Gets data for a property of files
-     * Files must be in the same folder
+     * Gets data for a property of files. Files must be in the same folder
      * @param files Array of file's fullpath
      * @param propertyName property name
      * @returns Object whose key is file's fullpath and value is file's property value.
@@ -25,12 +24,11 @@ declare namespace Win32Props {
     function getValues(files:string[], propertyName:PropertyName): Promise<{[file:string]:string}>;
 
     /**
-     * Sets a property value of a file
-     * If the file is in use, process fails
+     * Sets a property value of a file. If the file is in use, process fails
      * @param file file's fullpath
      * @param propertyName property name
      * @param propertyValue value to set
-     * @returns True when comment is written sucuseccfully, false when error occurs.
+     * @returns True when value is set, false when error occurs.
     */
     function setValue(file:string, propertyName:PropertyName, propertyValue:string): Promise<boolean>;
 

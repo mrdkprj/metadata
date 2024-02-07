@@ -58,7 +58,7 @@ var runTest = function () { return __awaiter(void 0, void 0, void 0, function ()
                 return [4 /*yield*/, index_1.default.setValue(target, "Comment", newComment)];
             case 3:
                 _a.sent();
-                return [4 /*yield*/, index_1.default.getValues(file_1.files, "Comment")];
+                return [4 /*yield*/, index_1.default.getValue(target, "Comment")];
             case 4:
                 x = _a.sent();
                 console.log(x);
