@@ -42,20 +42,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = __importDefault(require("../lib/index"));
 var file_1 = require("./file");
 var runTest = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var x, target, oldComment, newComment, all;
+    var x, all, target, newComment;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, index_1.default.getComments(file_1.files)];
+            case 0: return [4 /*yield*/, index_1.default.getValues(file_1.files, "Comment")];
             case 1:
                 x = _a.sent();
                 console.log(x);
-                target = file_1.files[1];
-                oldComment = x[target];
-                newComment = "test";
-                return [4 /*yield*/, index_1.default.read(file_1.files[0])];
+                return [4 /*yield*/, index_1.default.read(file_1.files[1])];
             case 2:
                 all = _a.sent();
                 console.log(all);
+                target = file_1.files[1];
+                newComment = String(new Date().getTime());
+                return [4 /*yield*/, index_1.default.setValue(target, "Comment", newComment)];
+            case 3:
+                _a.sent();
+                return [4 /*yield*/, index_1.default.getValues(file_1.files, "Comment")];
+            case 4:
+                x = _a.sent();
+                console.log(x);
                 return [2 /*return*/];
         }
     });

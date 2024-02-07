@@ -5,3 +5,4 @@ npm-debug.log*
 test/file.js
 build
 ref
+.vscode
