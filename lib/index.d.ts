@@ -13,7 +13,7 @@ declare namespace Win32Props {
      * @param propertyName Property name
      * @returns File's property value
     */
-    function getValue(file:string, propertyName:PropertyName): Promise<{[file:string]:string}>;
+    function getValue(file:string, propertyName:PropertyName): Promise<string>;
 
     /**
      * Gets data for a property of files. Files must be in the same folder

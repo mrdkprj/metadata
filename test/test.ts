@@ -12,10 +12,11 @@ const runTest = async () => {
     const target = files[1];
     const newComment = String(new Date().getTime())
 
+    console.log(`writing comment: ${newComment}`)
     await metadata.setValue(target, "Comment", newComment);
 
-    x = await metadata.getValue(target, "AudioEncodingBitrate");
-    console.log(x);
+    let y = await metadata.getValue(target, "Comment");
+    console.log(y);
 
     // try{
     //     //@ts-ignore
