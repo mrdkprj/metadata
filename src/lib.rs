@@ -37,13 +37,18 @@ fn get_value(mut cx: FunctionContext) -> JsResult<JsPromise> {
         return cx.throw_error("Invalid number of arguments");
     }
 
-    let mut files = Vec::new();
     let file = cx.argument::<JsString>(0)?.value(&mut cx);
-    files.push(file);
+    let files = vec![file];
+    let prop_name = cx.argument::<JsString>(1)?.value(&mut cx);
 
-    let result = get_values_promise(cx, files)?;
+    let promise = cx.task(move || read_values(files, prop_name)).promise(move |mut cx, values| {
+        match values {
+            Ok(values) => Ok(cx.string(values.values().nth(0).unwrap_or(&"".to_string()))),
+            Err(e) => cx.throw_error(e.message().to_string()),
+        }
+    });
 
-    Ok(result)
+    Ok(promise)
 
 }
 
@@ -60,13 +65,6 @@ fn get_values(mut cx: FunctionContext) -> JsResult<JsPromise> {
         let full_path = file.to_string(&mut cx)?.value(&mut cx);
         files.push(full_path);
     }
-
-    let result = get_values_promise(cx, files)?;
-
-    Ok(result)
-}
-
-fn get_values_promise(mut cx: FunctionContext, files:Vec<String>) -> JsResult<JsPromise>{
 
     let prop_name = cx.argument::<JsString>(1)?.value(&mut cx);
 
@@ -86,6 +84,7 @@ fn get_values_promise(mut cx: FunctionContext, files:Vec<String>) -> JsResult<Js
     });
 
     Ok(promise)
+
 }
 
 fn set_value(mut cx: FunctionContext) -> JsResult<JsPromise> {

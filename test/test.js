@@ -45,7 +45,7 @@ var runTest = function () { return __awaiter(void 0, void 0, void 0, function ()
     var x, all, target, newComment;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, index_1.default.getValues(file_1.files, "Comment")];
+            case 0: return [4 /*yield*/, index_1.default.getValues(file_1.files, "AudioEncodingBitrate")];
             case 1:
                 x = _a.sent();
                 console.log(x);
@@ -58,7 +58,7 @@ var runTest = function () { return __awaiter(void 0, void 0, void 0, function ()
                 return [4 /*yield*/, index_1.default.setValue(target, "Comment", newComment)];
             case 3:
                 _a.sent();
-                return [4 /*yield*/, index_1.default.getValue(target, "Comment")];
+                return [4 /*yield*/, index_1.default.getValue(target, "AudioEncodingBitrate")];
             case 4:
                 x = _a.sent();
                 console.log(x);

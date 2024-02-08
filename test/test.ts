@@ -3,7 +3,7 @@ import { files } from "./file"
 
 const runTest = async () => {
 
-    let x = await metadata.getValues(files, "Comment");
+    let x = await metadata.getValues(files, "AudioEncodingBitrate");
     console.log(x);
 
     const all = await metadata.read(files[1]);
@@ -14,7 +14,7 @@ const runTest = async () => {
 
     await metadata.setValue(target, "Comment", newComment);
 
-    x = await metadata.getValue(target, "Comment");
+    x = await metadata.getValue(target, "AudioEncodingBitrate");
     console.log(x);
 
     // try{
