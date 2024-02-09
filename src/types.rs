@@ -18,7 +18,6 @@ pub struct Variant(VARIANT);
 impl Drop for Variant {
     fn drop(&mut self) {
         unsafe {
-            print!("variant drop");
             let _ = VariantClear(&mut self.0);
         }
     }
@@ -67,7 +66,6 @@ pub struct PropVariant(PROPVARIANT);
 impl Drop for PropVariant {
     fn drop(&mut self) {
         unsafe {
-            print!("prop drop");
             let _ = PropVariantClear(&mut self.0);
         }
     }
