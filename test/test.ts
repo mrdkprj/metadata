@@ -3,11 +3,11 @@ import { files } from "./file"
 
 const runTest = async () => {
 
-    let x = await metadata.getValues(files, "AudioEncodingBitrate");
+    let x = await metadata.getValues(files, "VideoOrientation");
     console.log(x);
 
-    const all = await metadata.read(files[1]);
-    console.log(all)
+    // const all = await metadata.read(files[1], true);
+    // console.log(all)
 
     const target = files[1];
     const newComment = String(new Date().getTime())

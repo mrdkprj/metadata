@@ -4,9 +4,15 @@ mod io;
 use io::*;
 
 fn read(mut cx: FunctionContext) -> JsResult<JsPromise> {
-    let file = cx.argument::<JsString>(0)?.value(&mut cx);
 
-    let promise = cx.task(move || read_all(file)).promise(move |mut cx, map| {
+    if cx.len() != 2 {
+        return cx.throw_error("Invalid number of arguments");
+    }
+
+    let file = cx.argument::<JsString>(0)?.value(&mut cx);
+    let format = cx.argument::<JsBoolean>(1)?.value(&mut cx);
+
+    let promise = cx.task(move || read_all(file, format)).promise(move |mut cx, map| {
         match map {
             Ok(map) => {
                 let result = cx.empty_object();

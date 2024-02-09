@@ -13,11 +13,13 @@ use windows::{
                 COINIT_APARTMENTTHREADED
             },
             Variant::VARIANT,
-        }, UI::Shell::{
+        },
+        UI::Shell::{
             FolderItem2,
             IShellDispatch,
             PropertiesSystem::{
                 IPropertyStore,
+                PROPERTYKEY,
                 PSFormatForDisplayAlloc,
                 PSGetNameFromPropertyKey,
                 PSGetPropertyKeyFromName,
@@ -25,7 +27,6 @@ use windows::{
                 GPS_DEFAULT,
                 GPS_READWRITE,
                 PDFF_DEFAULT,
-                PROPERTYKEY,
             }
         }
     },
@@ -69,7 +70,7 @@ fn get_propertykey(name:&String) -> windows::core::Result<PROPERTYKEY> {
 
 }
 
-pub fn read_all(file:String) -> windows::core::Result<HashMap<String,String>> {
+pub fn read_all(file:String, format:bool) -> windows::core::Result<HashMap<String,String>> {
 
     let mut result = HashMap::new();
 
@@ -93,8 +94,8 @@ pub fn read_all(file:String) -> windows::core::Result<HashMap<String,String>> {
                         match PSGetNameFromPropertyKey(&propkey) {
                             Ok(keyname) => {
                                 let key = keyname.to_string()?.replace("System", "").replace(".", "");
-                                let value = PSFormatForDisplayAlloc(&propkey, &propvalue, PDFF_DEFAULT)?;
-                                result.insert(key, value.to_string()?);
+                                let value = if format { PSFormatForDisplayAlloc(&propkey, &propvalue, PDFF_DEFAULT)?.to_string()? } else { propvalue.to_string()? };
+                                result.insert(key, value.to_string());
                             }
                             Err(_) => (),
                         };

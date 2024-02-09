@@ -3,9 +3,10 @@ declare namespace Win32Props {
     /**
      * Gets data for all available properties of a file
      * @param file File's fullpath.
+     * @param format Whether to format property value or not. Default is false.
      * @returns Object whose key is property name and value is formatted property value.
     */
-    function read(file:string): Promise<Property>;
+    function read(file:string, format?:boolean): Promise<Property>;
 
     /**
      * Gets data for a property of a file

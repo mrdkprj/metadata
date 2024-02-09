@@ -2,15 +2,14 @@ use std::mem::ManuallyDrop;
 use windows::{
     core::{ComInterface, BSTR, HSTRING, PCWSTR, PWSTR},
     Win32::{
-        System::{
+        Foundation::VARIANT_TRUE, System::{
             Com::StructuredStorage::{
-                PropVariantClear, PROPVARIANT, PROPVARIANT_0_0
+                PropVariantChangeType, PropVariantClear, PROPVARIANT, PROPVARIANT_0_0, PROPVAR_CHANGE_FLAGS
             },
             Variant::{
-                VariantChangeType, VariantClear, VARIANT, VARIANT_0_0, VAR_CHANGE_FLAGS, VT_BSTR, VT_DISPATCH, VT_LPWSTR
+                VariantChangeType, VariantClear, VARIANT, VARIANT_0_0, VAR_CHANGE_FLAGS, VT_BOOL, VT_BSTR, VT_DISPATCH, VT_LPWSTR
             }
-        },
-        UI::Shell::FolderItem,
+        }, UI::Shell::FolderItem
     },
 };
 
@@ -19,6 +18,7 @@ pub struct Variant(VARIANT);
 impl Drop for Variant {
     fn drop(&mut self) {
         unsafe {
+            print!("variant drop");
             let _ = VariantClear(&mut self.0);
         }
     }
@@ -75,6 +75,7 @@ impl Drop for PropVariant {
 
 pub trait ToPropVariant {
     fn from_str(s:&str) -> PROPVARIANT;
+    fn to_string(&self) -> windows::core::Result<String>;
 }
 
 impl ToPropVariant for PROPVARIANT {
@@ -87,6 +88,32 @@ impl ToPropVariant for PROPVARIANT {
         v00.Anonymous.pwszVal = pwstr;
         variant.Anonymous.Anonymous = ManuallyDrop::new(v00);
         variant
+    }
+
+    fn to_string(&self) -> windows::core::Result<String> {
+        unsafe{
+            match &self.Anonymous.Anonymous.vt {
+                &VT_BOOL => {
+                    let str = if &self.Anonymous.Anonymous.Anonymous.boolVal == &VARIANT_TRUE { "true" } else { "false"};
+                    Ok(str.to_string())
+                },
+                _ => {
+                    let mut variant = PROPVARIANT::default();
+                    match PropVariantChangeType(&mut variant, self, PROPVAR_CHANGE_FLAGS(0), VT_BSTR) {
+                        Ok(_) => {
+                            let v00 = &variant.Anonymous.Anonymous;
+                            let str = v00.Anonymous.bstrVal.to_string();
+                            PropVariantClear(&mut variant)?;
+                            Ok(str)
+                        }
+                        Err(_) => {
+                            PropVariantClear(&mut variant)?;
+                            Ok("N/A".to_string())
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
