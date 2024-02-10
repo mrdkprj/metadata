@@ -1,7 +1,7 @@
 {
   "name": "win32props",
   "version": "0.3.0",
-  "description": "",
+  "description": "Reads and writes Windows file property values",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -13,7 +13,7 @@
     "test": "node ./test/test.js",
     "tsc": "tsc ./test/test.ts --esModuleInterop --lib ES2015,dom"
   },
-  "author": "",
+  "author": "mrdkprj",
   "license": "MIT",
   "devDependencies": {
     "cargo-cp-artifact": "^0.1",
@@ -28,5 +28,22 @@
     "host": "https://github.com/mrdkprj/metadata/releases/download/",
     "remote_path": "{version}",
     "package_name": "{module_name}-v{version}-{node_abi}-{platform}-{arch}.tar.gz"
+  },
+  "keywords": [
+    "win32,",
+    "windows,",
+    "metadata,",
+    "property,",
+    "read,",
+    "write,",
+    "extract,"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mrdkprj/win32props.git"
+  },
+  "homepage": "https://github.com/mrdkprj/win32props",
+  "bugs": {
+    "url": "https://github.com/mrdkprj/win32props/issues"
   }
 }

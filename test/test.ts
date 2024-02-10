@@ -6,8 +6,8 @@ const runTest = async () => {
     let x = await metadata.getValues(files, "VideoOrientation");
     console.log(x);
 
-    // const all = await metadata.read(files[1], true);
-    // console.log(all)
+    const all = await metadata.read(files[1], true);
+    console.log(all)
 
     const target = files[1];
     const newComment = String(new Date().getTime())
@@ -18,12 +18,12 @@ const runTest = async () => {
     let y = await metadata.getValue(target, "Comment");
     console.log(y);
 
-    // try{
-    //     //@ts-ignore
-    //     await metadata.setComment(target, oldComment, "");
-    // }catch(ex:any){
-    //     console.log(ex.message)
-    // }
+    try{
+        //@ts-ignore
+        await metadata.setComment(target, oldComment, "");
+    }catch(ex:any){
+        console.log(ex.message)
+    }
 
 }
 
