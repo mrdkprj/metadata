@@ -5,10 +5,10 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
+    "install": "npm run build-release",
     "build": "cargo-cp-artifact -nc ./build/index.node -- cargo build --message-format=json-render-diagnostics",
     "build-debug": "npm run build --",
     "build-release": "npm run build -- --release",
-    "install": "node-pre-gyp install --fallback-to-build",
     "package": "node-pre-gyp package",
     "test": "node ./test/test.js",
     "tsc": "tsc ./test/test.ts --esModuleInterop --lib ES2015,dom"
@@ -16,11 +16,10 @@
   "author": "mrdkprj",
   "license": "MIT",
   "devDependencies": {
-    "cargo-cp-artifact": "^0.1",
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@mapbox/node-pre-gyp": "^1.0.11"
+    "cargo-cp-artifact": "^0.1"
   },
   "binary": {
     "module_name": "index",

@@ -42,24 +42,42 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = __importDefault(require("../lib/index"));
 var file_1 = require("./file");
 var runTest = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var x, target, newComment, y;
+    var x, all, target, newComment, y, ex_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, index_1.default.getValues(file_1.files, "VideoOrientation")];
+            case 0: return [4 /*yield*/, index_1.default.getValues(file_1.files, "Rating")];
             case 1:
                 x = _a.sent();
                 console.log(x);
-                target = file_1.files[1];
-                newComment = String(new Date().getTime());
-                console.log("writing comment: ".concat(newComment));
-                return [4 /*yield*/, index_1.default.setValue(target, "Comment", newComment)];
+                return [4 /*yield*/, index_1.default.read(file_1.files[1], true)];
             case 2:
-                _a.sent();
-                return [4 /*yield*/, index_1.default.getValue(target, "Comment")];
+                all = _a.sent();
+                console.log(all);
+                target = file_1.files[1];
+                newComment = "25" //String(new Date().getTime())
+                ;
+                console.log("writing comment: ".concat(newComment));
+                return [4 /*yield*/, index_1.default.setValue(target, "Rating", newComment)];
             case 3:
+                _a.sent();
+                return [4 /*yield*/, index_1.default.getValue(target, "Rating")];
+            case 4:
                 y = _a.sent();
                 console.log(y);
-                return [2 /*return*/];
+                _a.label = 5;
+            case 5:
+                _a.trys.push([5, 7, , 8]);
+                //@ts-ignore
+                return [4 /*yield*/, index_1.default.setComment(target, oldComment, "")];
+            case 6:
+                //@ts-ignore
+                _a.sent();
+                return [3 /*break*/, 8];
+            case 7:
+                ex_1 = _a.sent();
+                console.log(ex_1.message);
+                return [3 /*break*/, 8];
+            case 8: return [2 /*return*/];
         }
     });
 }); };

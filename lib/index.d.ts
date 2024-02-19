@@ -33,98 +33,7 @@ declare namespace Win32Props {
     */
     function setValue(file:string, propertyName:PropertyName, propertyValue:string): Promise<boolean>;
 
-    type PropertyName = "AppUserModelID"
-        | "AppUserModelParentID"
-        | "AppZoneIdentifier"
-        | "AudioChannelCount"
-        | "AudioEncodingBitrate"
-        | "AudioFormat"
-        | "AudioSampleRate"
-        | "AudioSampleSize"
-        | "AudioStreamNumber"
-        | "Author"
-        | "Comment"
-        | "ComputerName"
-        | "ContentType"
-        | "DRMIsProtected"
-        | "DateAccessed"
-        | "DateCreated"
-        | "DateImported"
-        | "DateModified"
-        | "DocumentDateCreated"
-        | "DocumentDateSaved"
-        | "ExpandoProperties"
-        | "FileAttributes"
-        | "FileAttributesDisplay"
-        | "FileExtension"
-        | "FileName"
-        | "FileOwner"
-        | "FilePlaceholderStatus"
-        | "IsFolder"
-        | "IsShared"
-        | "ItemAuthors"
-        | "ItemDate"
-        | "ItemFolderNameDisplay"
-        | "ItemFolderPathDisplay"
-        | "ItemFolderPathDisplayNarrow"
-        | "ItemName"
-        | "ItemNameDisplay"
-        | "ItemNameDisplayWithoutExtension"
-        | "ItemParticipants"
-        | "ItemPathDisplay"
-        | "ItemPathDisplayNarrow"
-        | "ItemType"
-        | "ItemTypeText"
-        | "Kind"
-        | "KindText"
-        | "LastWriterPackageFamilyName"
-        | "LinkTargetExtension"
-        | "LinkTargetParsingPath"
-        | "LinkTargetSFGAOFlags"
-        | "LinkTargetSFGAOFlagsStrings"
-        | "MIMEType"
-        | "MediaDuration"
-        | "MusicAlbumID"
-        | "MusicAlbumTitle"
-        | "MusicDisplayArtist"
-        | "NetworkLocation"
-        | "NotUserContent"
-        | "OfflineAvailability"
-        | "OfflineStatus"
-        | "ParsingName"
-        | "ParsingPath"
-        | "PerceivedType"
-        | "SFGAOFlags"
-        | "SecurityAllowedEnterpriseDataProtectionIdentities"
-        | "SecurityEncryptionOwners"
-        | "SecurityEncryptionOwnersDisplay"
-        | "ShareScope"
-        | "SharedWith"
-        | "SharingStatus"
-        | "ShellSFGAOFlagsStrings"
-        | "Size"
-        | "StorageProviderAggregatedCustomStates"
-        | "SyncTransferStatusFlags"
-        | "ThumbnailCacheId"
-        | "Title"
-        | "VideoCompression"
-        | "VideoEncodingBitrate"
-        | "VideoFourCC"
-        | "VideoFrameHeight"
-        | "VideoFrameRate"
-        | "VideoFrameWidth"
-        | "VideoHorizontalAspectRatio"
-        | "VideoIsSpherical"
-        | "VideoIsStereo"
-        | "VideoOrientation"
-        | "VideoStreamNumber"
-        | "VideoTotalBitrate"
-        | "VideoVerticalAspectRatio"
-        | "VolumeId"
-        | "ZoneIdentifier";
-
-    interface Property {
-        [key: string]: any;
+    type Property = {
         AppUserModelID?: string;
         AppUserModelParentID?: string;
         AppZoneIdentifier?: string;
@@ -186,6 +95,7 @@ declare namespace Win32Props {
         ParsingName?: string;
         ParsingPath?: string;
         PerceivedType?: string;
+        Rating?:string;
         SFGAOFlags?: string;
         SecurityAllowedEnterpriseDataProtectionIdentities?: string;
         SecurityEncryptionOwners?: string;
@@ -215,6 +125,8 @@ declare namespace Win32Props {
         VolumeId?: string;
         ZoneIdentifier?: string;
     }
+
+    type PropertyName = keyof Property;
 }
 
 export = Win32Props;
