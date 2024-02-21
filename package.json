@@ -21,10 +21,6 @@
   "dependencies": {
     "cargo-cp-artifact": "^0.1"
   },
-  "files": [
-    "lib/**",
-    "src/**"
-  ],
   "binary": {
     "module_name": "index",
     "module_path": "./build/",
