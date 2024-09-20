@@ -6,7 +6,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "install": "npm run build-release",
-    "build": "cargo-cp-artifact -nc ./build/index.node -- cargo build --message-format=json-render-diagnostics",
+    "build": "cargo-cp-artifact -a cdylib node_wcpopup ./build/index.node -- cargo build --message-format=json-render-diagnostics",
     "build-debug": "npm run build --",
     "build-release": "npm run build -- --release",
     "package": "node-pre-gyp package",

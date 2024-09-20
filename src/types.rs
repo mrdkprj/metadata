@@ -2,14 +2,18 @@ use std::mem::ManuallyDrop;
 use windows::{
     core::{ComInterface, BSTR, HSTRING, PCWSTR, PWSTR},
     Win32::{
-        Foundation::VARIANT_TRUE, System::{
+        Foundation::VARIANT_TRUE,
+        System::{
             Com::StructuredStorage::{
-                PropVariantChangeType, PropVariantClear, PROPVARIANT, PROPVARIANT_0_0, PROPVAR_CHANGE_FLAGS
+                PropVariantChangeType, PropVariantClear, PROPVARIANT, PROPVARIANT_0_0,
+                PROPVAR_CHANGE_FLAGS,
             },
             Variant::{
-                VariantChangeType, VariantClear, VARIANT, VARIANT_0_0, VAR_CHANGE_FLAGS, VT_BOOL, VT_BSTR, VT_DISPATCH, VT_LPWSTR
-            }
-        }, UI::Shell::FolderItem
+                VariantChangeType, VariantClear, VARIANT, VARIANT_0_0, VAR_CHANGE_FLAGS, VT_BOOL,
+                VT_BSTR, VT_DISPATCH, VT_LPWSTR,
+            },
+        },
+        UI::Shell::FolderItem,
     },
 };
 
@@ -25,7 +29,7 @@ impl Drop for Variant {
 
 pub trait ToVariant {
     fn from_str(s: &str) -> VARIANT;
-    fn from_item(item:&FolderItem) -> windows::core::Result<VARIANT>;
+    fn from_item(item: &FolderItem) -> windows::core::Result<VARIANT>;
     fn to_string(&self) -> windows::core::Result<String>;
 }
 
@@ -40,7 +44,7 @@ impl ToVariant for VARIANT {
         variant
     }
 
-    fn from_item(item:&FolderItem) -> windows::core::Result<VARIANT> {
+    fn from_item(item: &FolderItem) -> windows::core::Result<VARIANT> {
         let mut variant = VARIANT::default();
         let mut v00 = VARIANT_0_0::default();
         v00.vt = VT_DISPATCH;
@@ -72,12 +76,12 @@ impl Drop for PropVariant {
 }
 
 pub trait ToPropVariant {
-    fn from_str(s:&str) -> PROPVARIANT;
+    fn from_str(s: &str) -> PROPVARIANT;
     fn to_string(&self) -> windows::core::Result<String>;
 }
 
 impl ToPropVariant for PROPVARIANT {
-    fn from_str(s:&str) -> PROPVARIANT {
+    fn from_str(s: &str) -> PROPVARIANT {
         let mut variant = PROPVARIANT::default();
         let mut v00 = PROPVARIANT_0_0::default();
         v00.vt = VT_LPWSTR;
@@ -89,15 +93,24 @@ impl ToPropVariant for PROPVARIANT {
     }
 
     fn to_string(&self) -> windows::core::Result<String> {
-        unsafe{
+        unsafe {
             match &self.Anonymous.Anonymous.vt {
                 &VT_BOOL => {
-                    let str = if &self.Anonymous.Anonymous.Anonymous.boolVal == &VARIANT_TRUE { "true" } else { "false"};
+                    let str = if &self.Anonymous.Anonymous.Anonymous.boolVal == &VARIANT_TRUE {
+                        "true"
+                    } else {
+                        "false"
+                    };
                     Ok(str.to_string())
-                },
+                }
                 _ => {
                     let mut variant = PROPVARIANT::default();
-                    match PropVariantChangeType(&mut variant, self, PROPVAR_CHANGE_FLAGS(0), VT_BSTR) {
+                    match PropVariantChangeType(
+                        &mut variant,
+                        self,
+                        PROPVAR_CHANGE_FLAGS(0),
+                        VT_BSTR,
+                    ) {
                         Ok(_) => {
                             let v00 = &variant.Anonymous.Anonymous;
                             let str = v00.Anonymous.bstrVal.to_string();
@@ -115,17 +128,17 @@ impl ToPropVariant for PROPVARIANT {
     }
 }
 
-pub fn to_hstring(str:&String) -> HSTRING {
+pub fn to_hstring(str: &String) -> HSTRING {
     HSTRING::from(str)
 }
 
 #[allow(dead_code)]
-pub fn to_pcwstr(str:&String) -> PCWSTR {
+pub fn to_pcwstr(str: &String) -> PCWSTR {
     let hstr = HSTRING::from(str);
     PCWSTR::from_raw(hstr.as_ptr())
 }
 
-pub fn to_btsr(str:&str) -> windows::core::Result<BSTR> {
+pub fn to_btsr(str: &str) -> windows::core::Result<BSTR> {
     let vec: Vec<u16> = str.encode_utf16().collect();
     let btsr = BSTR::from_wide(&vec)?;
     Ok(btsr)
