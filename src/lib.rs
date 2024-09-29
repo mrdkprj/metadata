@@ -1,10 +1,9 @@
 use neon::prelude::*;
-mod types;
 mod io;
+mod types;
 use io::*;
 
 fn read(mut cx: FunctionContext) -> JsResult<JsPromise> {
-
     if cx.len() != 2 {
         return cx.throw_error("Invalid number of arguments");
     }
@@ -12,8 +11,9 @@ fn read(mut cx: FunctionContext) -> JsResult<JsPromise> {
     let file = cx.argument::<JsString>(0)?.value(&mut cx);
     let format = cx.argument::<JsBoolean>(1)?.value(&mut cx);
 
-    let promise = cx.task(move || read_all(file, format)).promise(move |mut cx, map| {
-        match map {
+    let promise = cx
+        .task(move || read_all(file, format))
+        .promise(move |mut cx, map| match map {
             Ok(map) => {
                 let result = cx.empty_object();
 
@@ -21,7 +21,6 @@ fn read(mut cx: FunctionContext) -> JsResult<JsPromise> {
                 keys.sort();
 
                 for key in keys {
-
                     let prop_key = cx.string(&key);
                     let prop_value = cx.string(map.get(&key).unwrap());
 
@@ -29,16 +28,14 @@ fn read(mut cx: FunctionContext) -> JsResult<JsPromise> {
                 }
 
                 Ok(result)
-            },
+            }
             Err(e) => cx.throw_error(e.message().to_string()),
-        }
-    });
+        });
 
     Ok(promise)
 }
 
 fn get_value(mut cx: FunctionContext) -> JsResult<JsPromise> {
-
     if cx.len() != 2 {
         return cx.throw_error("Invalid number of arguments");
     }
@@ -47,19 +44,17 @@ fn get_value(mut cx: FunctionContext) -> JsResult<JsPromise> {
     let files = vec![file];
     let prop_name = cx.argument::<JsString>(1)?.value(&mut cx);
 
-    let promise = cx.task(move || read_values(files, prop_name)).promise(move |mut cx, values| {
-        match values {
-            Ok(values) => Ok(cx.string(values.values().nth(0).unwrap_or(&"".to_string()))),
+    let promise = cx
+        .task(move || read_values(files, prop_name))
+        .promise(move |mut cx, values| match values {
+            Ok(values) => Ok(cx.string(values.values().next().unwrap_or(&"".to_string()))),
             Err(e) => cx.throw_error(e.message().to_string()),
-        }
-    });
+        });
 
     Ok(promise)
-
 }
 
 fn get_values(mut cx: FunctionContext) -> JsResult<JsPromise> {
-
     if cx.len() != 2 {
         return cx.throw_error("Invalid number of arguments");
     }
@@ -74,8 +69,9 @@ fn get_values(mut cx: FunctionContext) -> JsResult<JsPromise> {
 
     let prop_name = cx.argument::<JsString>(1)?.value(&mut cx);
 
-    let promise = cx.task(move || read_values(files, prop_name)).promise(move |mut cx, values| {
-        match values {
+    let promise = cx
+        .task(move || read_values(files, prop_name))
+        .promise(move |mut cx, values| match values {
             Ok(values) => {
                 let result = cx.empty_object();
                 for (key, value) in values {
@@ -84,17 +80,14 @@ fn get_values(mut cx: FunctionContext) -> JsResult<JsPromise> {
                     result.set(&mut cx, path, comment)?;
                 }
                 Ok(result)
-            },
+            }
             Err(e) => cx.throw_error(e.message().to_string()),
-        }
-    });
+        });
 
     Ok(promise)
-
 }
 
 fn set_value(mut cx: FunctionContext) -> JsResult<JsPromise> {
-
     if cx.len() != 3 {
         return cx.throw_error("Invalid number of arguments");
     }
@@ -103,16 +96,15 @@ fn set_value(mut cx: FunctionContext) -> JsResult<JsPromise> {
     let key = cx.argument::<JsString>(1)?.value(&mut cx);
     let value = cx.argument::<JsString>(2)?.value(&mut cx);
 
-    let promise = cx.task(move || write_value(file, key, value)).promise(move |mut cx, result| {
-        match result {
+    let promise = cx
+        .task(move || write_value(file, key, value))
+        .promise(move |mut cx, result| match result {
             Ok(result) => Ok(cx.boolean(result)),
             Err(e) => cx.throw_error(e.message().to_string()),
-        }
-    });
+        });
 
     Ok(promise)
 }
-
 
 #[neon::main]
 fn main(mut cx: ModuleContext) -> NeonResult<()> {

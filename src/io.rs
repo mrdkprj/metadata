@@ -70,24 +70,17 @@ pub fn read_all(file: String, format: bool) -> windows::core::Result<HashMap<Str
             let mut propkey = PROPERTYKEY::default();
 
             if store.GetAt(i, &mut propkey).is_ok() {
-                match store.GetValue(&mut propkey) {
-                    Ok(propvalue) => {
-                        match PSGetNameFromPropertyKey(&propkey) {
-                            Ok(keyname) => {
-                                let key =
-                                    keyname.to_string()?.replace("System", "").replace(".", "");
-                                let value = if format {
-                                    PSFormatForDisplayAlloc(&propkey, &propvalue, PDFF_DEFAULT)?
-                                        .to_string()?
-                                } else {
-                                    propvalue.to_string()?
-                                };
-                                result.insert(key, value.to_string());
-                            }
-                            Err(_) => (),
+                if let Ok(propvalue) = store.GetValue(&propkey) {
+                    if let Ok(keyname) = PSGetNameFromPropertyKey(&propkey) {
+                        let key = keyname.to_string()?.replace("System", "").replace('.', "");
+                        let value = if format {
+                            PSFormatForDisplayAlloc(&propkey, &propvalue, PDFF_DEFAULT)?
+                                .to_string()?
+                        } else {
+                            propvalue.to_string()?
                         };
-                    }
-                    Err(_) => (),
+                        result.insert(key, value.to_string());
+                    };
                 }
             }
         }
@@ -117,7 +110,7 @@ pub fn read_values(
 
         for file in files {
             let file_name = Path::new(&file).file_name().unwrap().to_str().unwrap();
-            let name = to_btsr(&file_name)?;
+            let name = to_btsr(file_name)?;
             let folder_item = folder.ParseName(&name)?;
             let folder_item2 = folder_item.cast::<FolderItem2>()?;
             let b_prop_name = to_btsr(&prop_name)?;

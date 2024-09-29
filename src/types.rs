@@ -27,6 +27,7 @@ impl Drop for Variant {
     }
 }
 
+#[allow(dead_code)]
 pub trait ToVariant {
     fn from_str(s: &str) -> VARIANT;
     fn from_item(item: &FolderItem) -> windows::core::Result<VARIANT>;
@@ -36,8 +37,10 @@ pub trait ToVariant {
 impl ToVariant for VARIANT {
     fn from_str(s: &str) -> VARIANT {
         let mut variant = VARIANT::default();
-        let mut v00 = VARIANT_0_0::default();
-        v00.vt = VT_BSTR;
+        let mut v00 = VARIANT_0_0 {
+            vt: VT_BSTR,
+            ..Default::default()
+        };
         let bstr = BSTR::from(s);
         v00.Anonymous.bstrVal = ManuallyDrop::new(bstr);
         variant.Anonymous.Anonymous = ManuallyDrop::new(v00);
@@ -46,8 +49,10 @@ impl ToVariant for VARIANT {
 
     fn from_item(item: &FolderItem) -> windows::core::Result<VARIANT> {
         let mut variant = VARIANT::default();
-        let mut v00 = VARIANT_0_0::default();
-        v00.vt = VT_DISPATCH;
+        let mut v00 = VARIANT_0_0 {
+            vt: VT_DISPATCH,
+            ..Default::default()
+        };
         v00.Anonymous.pdispVal = ManuallyDrop::new(Some(item.cast()?));
         variant.Anonymous.Anonymous = ManuallyDrop::new(v00);
         Ok(variant)
@@ -83,8 +88,10 @@ pub trait ToPropVariant {
 impl ToPropVariant for PROPVARIANT {
     fn from_str(s: &str) -> PROPVARIANT {
         let mut variant = PROPVARIANT::default();
-        let mut v00 = PROPVARIANT_0_0::default();
-        v00.vt = VT_LPWSTR;
+        let mut v00 = PROPVARIANT_0_0 {
+            vt: VT_LPWSTR,
+            ..Default::default()
+        };
         let mut str: Vec<u16> = s.encode_utf16().chain([0u16]).collect();
         let pwstr = PWSTR(str.as_mut_ptr());
         v00.Anonymous.pwszVal = pwstr;
@@ -96,7 +103,7 @@ impl ToPropVariant for PROPVARIANT {
         unsafe {
             match &self.Anonymous.Anonymous.vt {
                 &VT_BOOL => {
-                    let str = if &self.Anonymous.Anonymous.Anonymous.boolVal == &VARIANT_TRUE {
+                    let str = if self.Anonymous.Anonymous.Anonymous.boolVal == VARIANT_TRUE {
                         "true"
                     } else {
                         "false"
